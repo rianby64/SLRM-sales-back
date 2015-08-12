@@ -11,8 +11,6 @@ module.exports = function (sequelize, app, multipartMiddleware) {
     freezeTableName: true // Model tableName will be the same as the model name
   });
 
-  Categories.sync();
-  
   var categories = tableAPI.setup(Categories);
   
   app.post('/api/categories/upload', multipartMiddleware, categories.upload);

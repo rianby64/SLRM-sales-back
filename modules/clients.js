@@ -20,8 +20,6 @@ module.exports = function (sequelize, app, multipartMiddleware) {
     freezeTableName: true // Model tableName will be the same as the model name
   });
 
-  Clients.sync();
-  
   var clients = tableAPI.setup(Clients);
   
   app.post('/api/clients/upload', multipartMiddleware, clients.upload);

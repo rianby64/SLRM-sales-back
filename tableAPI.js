@@ -29,7 +29,7 @@ function setup(Model) {
           id: id
         }
       }).then(function(entry) {
-        res.json(entry);
+        res.json(updateData); // ????
       });
     },
     delete: function (req, res) {

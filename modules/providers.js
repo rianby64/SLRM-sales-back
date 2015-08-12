@@ -14,13 +14,12 @@ module.exports = function (sequelize, app, multipartMiddleware) {
     address: Sequelize.TEXT,
     email: Sequelize.TEXT,
     
+    type: Sequelize.TEXT,
     comments: Sequelize.TEXT
   }, {
     freezeTableName: true // Model tableName will be the same as the model name
   });
 
-  Providers.sync();
-  
   var providers = tableAPI.setup(Providers);
   
   app.post('/api/providers/upload', multipartMiddleware, providers.upload);
