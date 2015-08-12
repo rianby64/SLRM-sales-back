@@ -44,6 +44,10 @@ var goodsproviders = require('./modules/goodsproviders.js')(SLRMdb, app, multipa
   Goods: goods.model
 });
 
+var goodsphotos = require('./modules/goodsphotos.js')(SLRMdb, app, multipartMiddleware, {
+  Goods: goods.model
+});
+
 var commprop = require('./modules/commprop.js')(SLRMdb, app, multipartMiddleware, {
   Client: clients.model,
   Broker: brokers.model
@@ -59,6 +63,7 @@ brokers.model.sync();
 categories.model.sync();
 clients.model.sync();
 goods.model.sync();
+goodsphotos.model.sync();
 providers.model.sync();
 goodsproviders.model.sync();
 commprop.model.sync();
