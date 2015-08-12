@@ -1,5 +1,7 @@
 "use strict";
 
+var fs = require('fs');
+
 function setup(Model) {
   return {
     model: Model,
@@ -47,15 +49,18 @@ function setup(Model) {
       var dir = './uploaded/';
       var newPath = dir + req.files.file.name;
 
-      if (!f.existsSync(dir)) {
-        f.mkdirSync(dir);
+      if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir);
       }
 
-      f.readFile(oldPath , function(err, data) {
-        f.writeFile(newPath, data, function(err) {
-          f.unlink(oldPath, function(){
-            if(err) { res.json({ 'status': 'err' }); return; };
-            res.send("File uploaded to: " + newPath);
+      fs.readFile(oldPath, function(err, data) {
+        fs.writeFile(newPath, data, function(err) {
+          fs.unlink(oldPath, function(){
+            if (err) { res.json({ status: 'err' }); return; };
+            res.send({
+              status: 'err',
+              msg: 'File uploaded to: ' + newPath
+            });
           });
         }); 
       });
