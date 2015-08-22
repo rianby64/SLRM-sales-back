@@ -6,64 +6,92 @@ var express = require('express'),
     multipartMiddleware = multipart(),
     Sequelize = require('sequelize'),
     passwordless = require('passwordless'),
-    MemStore = require('passwordless-memorystore'),
+    MemoryStore = require('passwordless-memorystore'),
+    email = require("emailjs"),
     cookieParser = require('cookie-parser'),
     expressSession = require('express-session'),
     app = express();
 
-var host = "http://localhost:3000/";
-// Setup of Passwordless
-passwordless.init(new MemStore());
-passwordless.addDelivery(function(tokenToSend, uidToSend, recipient, callback) {
-	console.log("\n\nYou can now access your account here: " 
-		+ host + "#/authenticate/" + tokenToSend + "/" + encodeURIComponent(uidToSend));
-	callback(null);
+var AUTHdb = new Sequelize('auth', 'auth', 'auth', {
+  host: 'localhost',
+  dialect: 'sqlite',
+  storage: './db/AUTHdb.sqlite'
+});
+var users = require('./modules/users.js')(AUTHdb, app, multipartMiddleware);
+users.model.sync();
+
+
+var smtpServer  = email.server.connect({
+   user:    'info_matematico_pro', 
+   password:'geometria64', 
+   host:    'smtp.matematico.pro', 
+   ssl:     false
 });
 
-app.use(express.static('./static'));
+
+// Setup of Passwordless 
+passwordless.init(new MemoryStore());
+passwordless.addDelivery(function(tokenToSend, uidToSend, recipient, callback) {
+  var host = 'localhost:3000';
+  smtpServer.send({
+    text:    'Hello!\nAccess your account here: http://' 
+    + host + "/#/authenticate/" + tokenToSend + "/" + encodeURIComponent(uidToSend), 
+    from:    'info@matematico.pro', 
+    to:      recipient,
+    subject: 'Token for ' + host
+  });
+
+  callback(null); 
+});
+
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
-app.get('/', function(req, res) {
-  res.sendfile('./static/index.html');
-});
+app.use(express.static('./static'));
+
 
 app.use(cookieParser());
-app.use(expressSession({secret: '42', saveUninitialized: false, resave: false}));
+app.use(expressSession({secret: 'cat keyboard', saveUninitialized: false, resave: false}));
 app.use(passwordless.sessionSupport());
 
 app.post('/login', passwordless.acceptToken({ allowPost: true }),
   function(req, res) {
     if(req.user){
-        console.log(req.user);
-        res.json("everything is ok");
+      res.status(200).end();
     }else{
-        res.status(401).send("not good");
+      res.status(401).end();
     }
+  });
+
+app.get('/logout', passwordless.logout(),
+  function(req, res) {
+    res.status(200).end();
   });
 
 app.post('/passwordless', 
   passwordless.requestToken(
-      // Simply accept every user
-      function(user, delivery, callback) {
-          var ret = { email: user, id: 213 };
-          callback(null, ret.id);
-      }),
-  function(req, res, next){
-      res.send("okay");
+    // Simply accept every user
+    function(email, delivery, callback) {
+      users.model.findOne({ where: {email: email} }).then(function(entry) {
+        if (entry) {
+          callback(null, entry.uuid);
+          return;
+        }
+        callback(null, null);
+      });
+    }
+  ),
+  function(req, res) {
+    res.status(200).end();
   });
 
+app.get('/check', passwordless.restricted(), function(req, res) { res.status(200).end() });
 app.use('/api/*', passwordless.restricted());
 
 var SLRMdb = new Sequelize('slrm', 'slrm', 'slrm', {
   host: 'localhost',
   dialect: 'sqlite',
   storage: './db/SLRMdb.sqlite'
-});
-
-var AUTHdb = new Sequelize('auth', 'auth', 'auth', {
-  host: 'localhost',
-  dialect: 'sqlite',
-  storage: './db/AUTHdb.sqlite'
 });
 
 var brokers = require('./modules/brokers.js')(SLRMdb, app, multipartMiddleware);
