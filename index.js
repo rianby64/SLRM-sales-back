@@ -88,7 +88,16 @@ app.post('/passwordless',
     res.status(200).end();
   });
 
-app.get('/check', passwordless.restricted(), function(req, res) { res.status(200).end() });
+app.get('/check',
+  passwordless.restricted(), 
+  function(req, res) {
+    return users.model.findOne({ where: {uuid: req.user} }).then(function(entry) {
+      if (entry) {
+        res.json(entry);
+      }
+      res.status(401).end();
+    });
+  });
 app.use('/api/*', passwordless.restricted());
 
 var SLRMdb = new Sequelize('slrm', 'slrm', 'slrm', {
