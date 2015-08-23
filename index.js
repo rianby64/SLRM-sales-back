@@ -12,14 +12,6 @@ var express = require('express'),
     expressSession = require('express-session'),
     app = express();
 
-var AUTHdb = new Sequelize('auth', 'auth', 'auth', {
-  host: 'localhost',
-  dialect: 'sqlite',
-  storage: './db/AUTHdb.sqlite'
-});
-var users = require('./modules/users.js')(AUTHdb, app, multipartMiddleware);
-users.model.sync();
-
 
 var smtpServer  = email.server.connect({
    user:    'info_matematico_pro', 
@@ -53,6 +45,17 @@ app.use(express.static('./static'));
 app.use(cookieParser());
 app.use(expressSession({secret: 'cat keyboard', saveUninitialized: false, resave: false}));
 app.use(passwordless.sessionSupport());
+
+
+
+var AUTHdb = new Sequelize('auth', 'auth', 'auth', {
+  host: 'localhost',
+  dialect: 'sqlite',
+  storage: './db/AUTHdb.sqlite'
+});
+var users = require('./modules/users.js')(AUTHdb, app, multipartMiddleware);
+users.model.sync();
+
 
 app.post('/login', passwordless.acceptToken({ allowPost: true }),
   function(req, res) {
