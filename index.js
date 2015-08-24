@@ -24,14 +24,16 @@ var smtpServer  = email.server.connect({
 // Setup of Passwordless 
 passwordless.init(new MemoryStore());
 passwordless.addDelivery(function(tokenToSend, uidToSend, recipient, callback) {
-  var host = 'localhost:3000';
-  smtpServer.send({
-    text:    'Hello!\nAccess your account here: http://' 
-    + host + "/#/authenticate/" + tokenToSend + "/" + encodeURIComponent(uidToSend), 
-    from:    'info@matematico.pro', 
-    to:      recipient,
-    subject: 'Token for ' + host
-  });
+  var host = 'localhost:3000',
+      message = {
+        text:    'Hello!\nAccess your account here: http://' 
+        + host + "/#/authenticate/" + tokenToSend + "/" + encodeURIComponent(uidToSend), 
+        from:    'info@matematico.pro', 
+        to:      recipient,
+        subject: 'Token for ' + host
+      };
+  console.log(message);
+  smtpServer.send(message);
 
   callback(null); 
 });
@@ -115,7 +117,8 @@ var clients = require('./modules/clients.js')(SLRMdb, app, multipartMiddleware, 
 var providers = require('./modules/providers.js')(SLRMdb, app, multipartMiddleware);
 
 var goods = require('./modules/goods.js')(SLRMdb, app, multipartMiddleware, {
-  Categories: categories.model
+  Categories: categories.model,
+  Providers: providers.model
 });
 
 var goodsproviders = require('./modules/goodsproviders.js')(SLRMdb, app, multipartMiddleware, {

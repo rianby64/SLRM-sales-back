@@ -11,7 +11,6 @@ module.exports = function (sequelize, app, multipartMiddleware, opts) {
     price: Sequelize.FLOAT,
     currency: Sequelize.TEXT,
     description: Sequelize.TEXT,
-    manufacturer: Sequelize.TEXT,
     
     comments: Sequelize.TEXT
   }, {
@@ -19,6 +18,7 @@ module.exports = function (sequelize, app, multipartMiddleware, opts) {
   });
 
   Goods.belongsTo(opts.Categories);
+  Goods.belongsTo(opts.Providers);
   
   var goods = tableAPI.setup(Goods);
   
@@ -31,6 +31,9 @@ module.exports = function (sequelize, app, multipartMiddleware, opts) {
       include: [
         {
           model: opts.Categories
+        },
+        {
+          model: opts.Providers
         }
       ]
     }).then(function(entry) {

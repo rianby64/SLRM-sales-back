@@ -6,7 +6,8 @@ function setup(Model) {
   return {
     model: Model,
     list: function (req, res) {
-      return Model.findAll().then(function(entries) {
+      var criteria = req.query;
+      return Model.findAll({ where: criteria }).then(function(entries) {
         res.json(entries);
       });
     },
