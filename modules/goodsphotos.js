@@ -1,6 +1,6 @@
 "use strict";
 
-var fs = require('fs');
+var fs = require('fs'), resize = require('im-resize');
 module.exports = function (sequelize, app, multipartMiddleware, opts) {
 
   var Sequelize = require('sequelize'),
@@ -26,7 +26,7 @@ module.exports = function (sequelize, app, multipartMiddleware, opts) {
         dir1 = './static',
         dir2 = dir1 + '/uploaded',
         dir = dir2 + '/goodsphotos',
-        newPath = dir + req.files.file.name,
+        newPath = dir + '/' + req.files.file.name,
         goodId = ~~req.params.goodId;
 
     
@@ -42,21 +42,57 @@ module.exports = function (sequelize, app, multipartMiddleware, opts) {
 
     fs.readFile(oldPath, function(err, data) {
       fs.writeFile(newPath, data, function(err) {
-        fs.unlink(oldPath, function(){
-          if (err) { 
-            res.json({
-              success: false
+        
+        
+        var image = {
+          path: newPath
+        };
+
+        var output = {
+          versions: [{
+            suffix: '-thumb',
+            maxHeight: 100,
+            maxWidth: 100
+          },{
+            suffix: '-square',
+            maxHeight: 300,
+            maxWidth: 300
+          }]
+        };
+
+        resize(image, output, function(error, versions) {
+          if (error) { console.error(error); }
+          
+//          console.log(versions[0].path);   // /path/to/image-thumb.jpg 
+//          console.log(versions[0].width);  // 150 
+//          console.log(versions[0].height); // 100 
+//
+//          console.log(versions[1].path);   // /path/to/image-square.jpg 
+//          console.log(versions[1].width);  // 200 
+//          console.log(versions[1].height); // 200 
+          
+          
+          fs.unlink(oldPath, function(){
+            if (err) { 
+              res.json({
+                success: false
+              });
+              return;
+            }
+            var neItem = {
+              goodId: goodId,
+              path: versions[1].path
+            };
+            return GoodsPhotos.create(neItem).then(function(entry) {
+              res.json(entry);
             });
-            return;
-          }
-          var neItem = {
-            goodId: goodId,
-            path: newPath
-          };
-          return GoodsPhotos.create(neItem).then(function(entry) {
-            res.json(entry);
           });
+          
+          
+          
         });
+        
+        
       }); 
     });
   });
