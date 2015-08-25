@@ -30,7 +30,10 @@ module.exports = function (sequelize, app, multipartMiddleware, opts) {
         commercialProposalId: commercialProposalId
       },
       include: [{
-        model: opts.Goods
+        model: opts.Goods,
+        include: [{
+          model: opts.Providers
+        }]
       }, {
         model: opts.Commprop
       }]

@@ -137,7 +137,8 @@ var commprop = require('./modules/commprop.js')(SLRMdb, app, multipartMiddleware
 
 var commpropgoods = require('./modules/commpropgoods.js')(SLRMdb, app, multipartMiddleware, {
   Commprop: commprop.model,
-  Goods: goods.model
+  Goods: goods.model,
+  Providers: providers.model
 });
 
 brokers.model.sync();
