@@ -5,7 +5,10 @@ module.exports = function (sequelize, app, multipartMiddleware, opts) {
       tableAPI = require('../tableAPI.js');
 
   var Commprop = sequelize.define('commercial_proposal', {
-    comments: Sequelize.TEXT
+    comments: Sequelize.TEXT,
+    sent_date: Sequelize.DATE,
+    alert_date: Sequelize.DATE,
+    status: Sequelize.TEXT
   }, {
     freezeTableName: true // Model tableName will be the same as the model name
   });
