@@ -10,6 +10,7 @@ module.exports = function (sequelize, app, multipartMiddleware, opts) {
       primaryKey: true,
       autoIncrement: true
     },
+    currency: Sequelize.TEXT,
     price: Sequelize.INTEGER
   }, {
     freezeTableName: true // Model tableName will be the same as the model name

@@ -8,7 +8,8 @@ module.exports = function (sequelize, app, multipartMiddleware, opts) {
     comments: Sequelize.TEXT,
     sent_date: Sequelize.DATE,
     alert_date: Sequelize.DATE,
-    status: Sequelize.TEXT
+    status: Sequelize.TEXT,
+    author: Sequelize.TEXT
   }, {
     freezeTableName: true // Model tableName will be the same as the model name
   });

@@ -11,6 +11,8 @@ module.exports = function (sequelize, app, multipartMiddleware, opts) {
       autoIncrement: true
     },
     price: Sequelize.INTEGER,
+    currency: Sequelize.TEXT,
+    delivery_date: Sequelize.DATE,
     quantity: Sequelize.INTEGER,
     comments: Sequelize.TEXT
   }, {
