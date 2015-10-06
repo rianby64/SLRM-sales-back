@@ -1,13 +1,26 @@
 "use strict";
 
-var fs = require('fs');
+var fs = require('fs'),
+    Sequelize = require('sequelize');
 
 function setup(Model) {
   return {
     model: Model,
     list: function (req, res) {
-      var criteria = req.query;
-      return Model.findAll({ where: criteria }).then(function(entries) {
+      var search = {}, ors = [];
+      if (req.query) {
+        if (req.query.search) {
+          for (var attr in Model.attributes) {
+            if (attr === 'id') continue;
+            ors.push(Sequelize.where(
+              Sequelize.fn('UPPER', Sequelize.cast(Sequelize.col(attr), 'TEXT')),
+              { $like: '%' + req.query.search.toUpperCase() + '%' }
+            ));
+          }
+          search = Sequelize.or.apply(undefined, ors);
+        }
+      }
+      return Model.findAll({ where: search }).then(function(entries) {
         res.json(entries);
       });
     },
