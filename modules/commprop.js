@@ -20,6 +20,44 @@ module.exports = function (sequelize, app, multipartMiddleware, opts) {
   
   app.post('/api/commprop/upload', multipartMiddleware, commprop.upload);
   app.get('/api/commprop', function (req, res) {
+    
+    var search = {}, ors = [],
+        attributes = [
+          'client.first_name',
+          'client.middle_name',
+          'client.last_name',
+          'client.passport',
+          'client.telephone',
+          'client.address',
+          'client.email',
+          'client.comments',
+          'broker.first_name',
+          'broker.middle_name',
+          'broker.last_name',
+          'broker.passport',
+          'broker.telephone',
+          'broker.address',
+          'broker.email',
+          'broker.type',
+          'broker.organization_name',
+          'broker.legal_name',
+          'broker.inn',
+          'broker.requeriments',
+          'broker.comments'
+        ];
+    if (req.query) {
+      if ((req.query.search) && (req.query.search.length > 0)) {
+        attributes.forEach(function(attr) {
+          ors.push(Sequelize.where(
+            Sequelize.fn('UPPER', Sequelize.cast(Sequelize.col('`' + attr + '`'), 'TEXT')),
+            { $like: '%' + req.query.search.toUpperCase() + '%' }
+          ));
+          search = Sequelize.or.apply(undefined, ors);
+        });
+      }
+    }
+    
+    
     return Commprop.findAll({
       include: [
         {
@@ -28,7 +66,8 @@ module.exports = function (sequelize, app, multipartMiddleware, opts) {
         {
           model: opts.Broker
         }
-      ]
+      ],
+      where: search
     }).then(function(entries) {
       res.json(entries);
     });

@@ -33,7 +33,7 @@ passwordless.addDelivery(function(tokenToSend, uidToSend, recipient, callback) {
         subject: 'Token for ' + host
       };
   console.log(message);
-  //smtpServer.send(message);
+  smtpServer.send(message);
 
   callback(null); 
 });

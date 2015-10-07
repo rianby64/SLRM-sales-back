@@ -9,7 +9,7 @@ function setup(Model) {
     list: function (req, res) {
       var search = {}, ors = [];
       if (req.query) {
-        if (req.query.search) {
+        if ((req.query.search) && (req.query.search.length > 0)) {
           for (var attr in Model.attributes) {
             if (attr === 'id') continue;
             ors.push(Sequelize.where(
