@@ -21,7 +21,7 @@ module.exports = function (sequelize, app, multipartMiddleware, opts) {
   app.post('/api/commprop/upload', multipartMiddleware, commprop.upload);
   app.get('/api/commprop', function (req, res) {
     
-    var search = {}, ors = [],
+    var search = { $or: {}},
         attributes = [
           'client.first_name',
           'client.middle_name',
@@ -48,11 +48,7 @@ module.exports = function (sequelize, app, multipartMiddleware, opts) {
     if (req.query) {
       if ((req.query.search) && (req.query.search.length > 0)) {
         attributes.forEach(function(attr) {
-          ors.push(Sequelize.where(
-            Sequelize.fn('UPPER', Sequelize.cast(Sequelize.col('`' + attr + '`'), 'TEXT')),
-            { $like: '%' + req.query.search.toUpperCase() + '%' }
-          ));
-          search = Sequelize.or.apply(undefined, ors);
+          search.$or[attr] = { $like: '%' + req.query.search + '%' };
         });
       }
     }

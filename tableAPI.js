@@ -7,17 +7,13 @@ function setup(Model) {
   return {
     model: Model,
     list: function (req, res) {
-      var search = {}, ors = [];
+      var search = { $or: { }};
       if (req.query) {
         if ((req.query.search) && (req.query.search.length > 0)) {
           for (var attr in Model.attributes) {
             if (attr === 'id') continue;
-            ors.push(Sequelize.where(
-              Sequelize.fn('UPPER', Sequelize.cast(Sequelize.col(attr), 'TEXT')),
-              { $like: '%' + req.query.search.toUpperCase() + '%' }
-            ));
+            search.$or[attr] = { $like: '%' + req.query.search + '%' };
           }
-          search = Sequelize.or.apply(undefined, ors);
         }
       }
       return Model.findAll({ where: search }).then(function(entries) {
