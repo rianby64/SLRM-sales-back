@@ -23,6 +23,7 @@ module.exports = function (sequelize, app, multipartMiddleware, opts) {
     
     var search = { $or: {}},
         attributes = [
+          'commercial_proposal.id',
           'client.first_name',
           'client.middle_name',
           'client.last_name',
@@ -48,7 +49,8 @@ module.exports = function (sequelize, app, multipartMiddleware, opts) {
     if (req.query) {
       if ((req.query.search) && (req.query.search.length > 0)) {
         attributes.forEach(function(attr) {
-          search.$or[attr] = { $like: '%' + req.query.search + '%' };
+//          search.$or[attr] = { $like: '%' + req.query.search + '%' };
+          search.$or[attr] = sequelize.where(sequelize.cast(sequelize.col(attr), 'text'), { $like: '%' + req.query.search + '%' });
         });
       }
     }
