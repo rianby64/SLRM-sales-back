@@ -8,6 +8,7 @@ module.exports = function (sequelize, app, multipartMiddleware) {
     uuid: Sequelize.TEXT,
     name: Sequelize.TEXT,
     email: Sequelize.TEXT,
+    telephone: Sequelize.TEXT,
     group: Sequelize.TEXT,
     comments: Sequelize.TEXT
   }, {

@@ -91,7 +91,7 @@ app.post('/passwordless',
   });
 
 app.get('/check',
-  passwordless.restricted(), 
+  passwordless.restricted(),
   function(req, res) {
     return users.model.findOne({ where: {uuid: req.user} }).then(function(entry) {
       if (entry) {
@@ -100,7 +100,7 @@ app.get('/check',
       res.status(401).end();
     });
   });
-app.use('/api/*', passwordless.restricted());
+app.use('/api/*', passwordless.restricted()); // to restrict::uncoment
 
 var SLRMdb = new Sequelize('slrm', 'slrm', 'slrm', {
   host: 'localhost',
