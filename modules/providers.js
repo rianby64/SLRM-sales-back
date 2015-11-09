@@ -25,9 +25,17 @@ module.exports = function (sequelize, app, multipartMiddleware) {
   app.post('/api/providers/upload', multipartMiddleware, providers.upload);
   app.get('/api/providers', function list(req, res) {
     console.log("listing", req.query);
-    var search = {}
+    var search = { $or: { }};
     if (req.query.hasOwnProperty('type')) {
-      search.type = req.query.type;
+      search.$and = { type: req.query.type };
+    }
+    if (req.query) {
+      if ((req.query.search) && (req.query.search.length > 0)) {
+        for (var attr in Providers.attributes) {
+          if (attr === 'id') continue;
+          search.$or[attr] = { $like: '%' + req.query.search + '%' };
+        }
+      }
     }
     return Providers.findAll({ where: search }).then(function(entries) {
       res.json(entries);
