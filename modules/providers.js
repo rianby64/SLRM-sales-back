@@ -23,7 +23,16 @@ module.exports = function (sequelize, app, multipartMiddleware) {
   var providers = tableAPI.setup(Providers);
   
   app.post('/api/providers/upload', multipartMiddleware, providers.upload);
-  app.get('/api/providers', providers.list);
+  app.get('/api/providers', function list(req, res) {
+    console.log("listing", req.query);
+    var search = {}
+    if (req.query.hasOwnProperty('type')) {
+      search.type = req.query.type;
+    }
+    return Providers.findAll({ where: search }).then(function(entries) {
+      res.json(entries);
+    });
+  });
   app.get('/api/providers/:id', providers.read);
   app.post('/api/providers', providers.create);
   app.put('/api/providers/:id', providers.update);
