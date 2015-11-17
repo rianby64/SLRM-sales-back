@@ -14,7 +14,7 @@ module.exports = function (sequelize, app, multipartMiddleware, opts) {
     freezeTableName: true // Model tableName will be the same as the model name
   });
 
-  var commprop = tableAPI.setup(Commprop);
+  var commprop = tableAPI.setup(Commprop, sequelize);
   Commprop.belongsTo(opts.Client);
   Commprop.belongsTo(opts.Broker);
   
@@ -49,8 +49,7 @@ module.exports = function (sequelize, app, multipartMiddleware, opts) {
     if (req.query) {
       if ((req.query.search) && (req.query.search.length > 0)) {
         attributes.forEach(function(attr) {
-//          search.$or[attr] = { $like: '%' + req.query.search + '%' };
-          search.$or[attr] = sequelize.where(sequelize.cast(sequelize.col(attr), 'text'), { $like: '%' + req.query.search + '%' });
+          search.$or[attr] = sequelize.where(sequelize.cast(sequelize.col(attr), 'text'), { $ilike: '%' + req.query.search + '%' });
         });
       }
     }

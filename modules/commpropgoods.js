@@ -22,7 +22,7 @@ module.exports = function (sequelize, app, multipartMiddleware, opts) {
   CommpropGoods.belongsTo(opts.Commprop);
   CommpropGoods.belongsTo(opts.Goods);
   
-  var commpropgoods = tableAPI.setup(CommpropGoods);
+  var commpropgoods = tableAPI.setup(CommpropGoods, sequelize);
   
   app.post('/api/commprop/:commercialProposalId/goods/upload', multipartMiddleware, commpropgoods.upload);
   app.get('/api/commprop/:commercialProposalId/goods', function (req, res) {

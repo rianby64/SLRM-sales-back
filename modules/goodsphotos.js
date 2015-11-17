@@ -19,7 +19,7 @@ module.exports = function (sequelize, app, multipartMiddleware, opts) {
 
   GoodsPhotos.belongsTo(opts.Goods);
   
-  var goodsphotos = tableAPI.setup(GoodsPhotos);
+  var goodsphotos = tableAPI.setup(GoodsPhotos, sequelize);
   
   app.post('/api/goods/:goodId/photos/upload', multipartMiddleware, function (req, res) {
     var oldPath = req.files.file.path,

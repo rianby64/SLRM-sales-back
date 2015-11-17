@@ -102,11 +102,13 @@ app.get('/check',
   });
 app.use('/api/*', passwordless.restricted()); // to restrict::uncoment
 
-var SLRMdb = new Sequelize('slrm', 'slrm', 'slrm', {
-  host: 'localhost',
-  dialect: 'sqlite',
-  storage: './db/SLRMdb.sqlite'
-});
+//var SLRMdb = new Sequelize('slrm', 'slrm', 'slrm', {
+//  host: 'localhost',
+//  dialect: 'sqlite',
+//  storage: './db/SLRMdb.sqlite'
+//});
+
+var SLRMdb = new Sequelize('postgres://slrm:slrm@localhost:5432/slrm');
 
 var brokers = require('./modules/brokers.js')(SLRMdb, app, multipartMiddleware);
 

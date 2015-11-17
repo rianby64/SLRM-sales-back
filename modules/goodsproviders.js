@@ -19,7 +19,7 @@ module.exports = function (sequelize, app, multipartMiddleware, opts) {
   GoodsProviders.belongsTo(opts.Providers);
   GoodsProviders.belongsTo(opts.Goods);
   
-  var goodsproviders = tableAPI.setup(GoodsProviders);
+  var goodsproviders = tableAPI.setup(GoodsProviders, sequelize);
   
   app.post('/api/goods/:goodId/providers/upload', multipartMiddleware, goodsproviders.upload);
   app.get('/api/goods/:goodId/providers', function (req, res) {
