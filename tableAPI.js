@@ -11,7 +11,7 @@ function setup(Model, sequelize) {
         if ((req.query.search) && (req.query.search.length > 0)) {
           for (var attr in Model.attributes) {
             if (attr === 'id') continue;
-            search.$or[attr] = sequelize.where(sequelize.cast(sequelize.col(attr), 'text'), { $like: '%' + req.query.search + '%' });
+            search.$or[attr] = sequelize.where(sequelize.cast(sequelize.col(attr), 'text'), { $ilike: '%' + req.query.search + '%' });
           }
         }
       }
