@@ -1,41 +1,41 @@
 "use strict";
 
 var express = require('express'),
-	bodyParser = require('body-parser'),
-	multipart = require('connect-multiparty'),
-    multipartMiddleware = multipart(),
-    Sequelize = require('sequelize'),
-    passwordless = require('passwordless'),
-    MemoryStore = require('passwordless-memorystore'),
-    email = require("emailjs"),
-    cookieParser = require('cookie-parser'),
-    expressSession = require('express-session'),
-    app = express();
+  bodyParser = require('body-parser'),
+  multipart = require('connect-multiparty'),
+  multipartMiddleware = multipart(),
+  Sequelize = require('sequelize'),
+  passwordless = require('passwordless'),
+  MemoryStore = require('passwordless-memorystore'),
+  email = require("emailjs"),
+  cookieParser = require('cookie-parser'),
+  expressSession = require('express-session'),
+  app = express();
 
 
 var smtpServer  = email.server.connect({
-   user:    'info_matematico_pro', 
-   password:'geometria64', 
-   host:    'smtp.matematico.pro', 
+   user:    'info_matematico_pro',
+   password:'geometria64',
+   host:    'smtp.matematico.pro',
    ssl:     false
 });
 
 
-// Setup of Passwordless 
+// Setup of Passwordless
 passwordless.init(new MemoryStore());
 passwordless.addDelivery(function(tokenToSend, uidToSend, recipient, callback) {
   var host = 'localhost:3000',
       message = {
-        text:    'Hello!\nAccess your account here: http://' 
-        + host + "/#/authenticate/" + tokenToSend + "/" + encodeURIComponent(uidToSend), 
-        from:    'info@matematico.pro', 
+        text:    'Hello!\nAccess your account here: http://'
+        + host + "/#/authenticate/" + tokenToSend + "/" + encodeURIComponent(uidToSend),
+        from:    'info@matematico.pro',
         to:      recipient,
         subject: 'Token for ' + host
       };
   console.log(message);
   smtpServer.send(message);
 
-  callback(null); 
+  callback(null);
 });
 
 
@@ -50,11 +50,14 @@ app.use(passwordless.sessionSupport());
 
 
 
-var AUTHdb = new Sequelize('auth', 'auth', 'auth', {
-  host: 'localhost',
-  dialect: 'sqlite',
-  storage: './db/AUTHdb.sqlite'
-});
+//var AUTHdb = new Sequelize('auth', 'auth', 'auth', {
+//  host: 'localhost',
+//  dialect: 'sqlite',
+//  storage: './db/AUTHdb.sqlite'
+//});
+
+var AUTHdb = new Sequelize('postgres://slrm:slrm@localhost:5432/slrm-users');
+
 var users = require('./modules/users.js')(AUTHdb, app, multipartMiddleware);
 users.model.sync();
 
@@ -73,7 +76,7 @@ app.get('/logout', passwordless.logout(),
     res.status(200).end();
   });
 
-app.post('/passwordless', 
+app.post('/passwordless',
   passwordless.requestToken(
     // Simply accept every user
     function(email, delivery, callback) {

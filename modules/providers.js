@@ -7,13 +7,13 @@ module.exports = function (sequelize, app, multipartMiddleware) {
   var Providers = sequelize.define('providers', {
     organization_name: Sequelize.TEXT,
     legal_name: Sequelize.TEXT,
-    inn: Sequelize.INTEGER,
+    inn: Sequelize.TEXT,
     requeriments: Sequelize.TEXT,
-    
+
     telephone: Sequelize.TEXT,
     address: Sequelize.TEXT,
     email: Sequelize.TEXT,
-    
+
     type: Sequelize.TEXT,
     comments: Sequelize.TEXT
   }, {
@@ -21,7 +21,7 @@ module.exports = function (sequelize, app, multipartMiddleware) {
   });
 
   var providers = tableAPI.setup(Providers, sequelize);
-  
+
   app.post('/api/providers/upload', multipartMiddleware, providers.upload);
   app.get('/api/providers', function list(req, res) {
     var search = { $or: { }};

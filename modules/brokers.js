@@ -10,25 +10,25 @@ module.exports = function (sequelize, app, multipartMiddleware) {
     last_name: Sequelize.TEXT,
     birth_date: Sequelize.DATE,
     passport: Sequelize.TEXT,
-    
+
     telephone: Sequelize.TEXT,
     address: Sequelize.TEXT,
     email: Sequelize.TEXT,
-    
+
     type: Sequelize.TEXT,
-    
+
     organization_name: Sequelize.TEXT,
     legal_name: Sequelize.TEXT,
-    inn: Sequelize.INTEGER,
+    inn: Sequelize.TEXT,
     requeriments: Sequelize.TEXT,
-    
+
     comments: Sequelize.TEXT
   }, {
     freezeTableName: true // Model tableName will be the same as the model name
   });
 
   var brokers = tableAPI.setup(Brokers, sequelize);
-  
+
   app.post('/api/brokers/upload', multipartMiddleware, brokers.upload);
   app.get('/api/brokers', brokers.list);
   app.get('/api/brokers/:id', brokers.read);

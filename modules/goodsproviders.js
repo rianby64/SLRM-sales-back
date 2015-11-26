@@ -3,7 +3,7 @@ module.exports = function (sequelize, app, multipartMiddleware, opts) {
 
   var Sequelize = require('sequelize'),
       tableAPI = require('../tableAPI.js');
-  
+
   var GoodsProviders = sequelize.define('goods_providers', {
     id: {
       type: Sequelize.INTEGER,
@@ -18,9 +18,9 @@ module.exports = function (sequelize, app, multipartMiddleware, opts) {
 
   GoodsProviders.belongsTo(opts.Providers);
   GoodsProviders.belongsTo(opts.Goods);
-  
+
   var goodsproviders = tableAPI.setup(GoodsProviders, sequelize);
-  
+
   app.post('/api/goods/:goodId/providers/upload', multipartMiddleware, goodsproviders.upload);
   app.get('/api/goods/:goodId/providers', function (req, res) {
     var goodId = ~~req.params.goodId;
@@ -41,6 +41,6 @@ module.exports = function (sequelize, app, multipartMiddleware, opts) {
   app.put('/api/goods/:goodId/providers/:id', goodsproviders.update);
   app.post('/api/goods/:goodId/providers', goodsproviders.create);
   app.delete('/api/goods/:goodId/providers/:id', goodsproviders.delete);
-  
+
   return goodsproviders;
 };

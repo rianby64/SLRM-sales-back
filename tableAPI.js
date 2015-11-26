@@ -23,7 +23,7 @@ function setup(Model, sequelize) {
       var neItem = req.body;
       return Model.create(neItem).then(function(entry) {
         res.json(entry);
-      });      
+      });
     },
     read: function (req, res) {
       var id = ~~req.params.id;
@@ -40,7 +40,7 @@ function setup(Model, sequelize) {
           id: id
         }
       }).then(function(entry) {
-        res.json(updateData); // ????
+        res.json(updateData);
       });
     },
     delete: function (req, res) {
@@ -71,7 +71,7 @@ function setup(Model, sequelize) {
               msg: 'File uploaded to: ' + newPath
             });
           });
-        }); 
+        });
       });
     }
   };

@@ -16,7 +16,7 @@ module.exports = function (sequelize, app, multipartMiddleware) {
   });
 
   var users = tableAPI.setup(Users, sequelize);
-  
+
   app.post('/api/users/upload', multipartMiddleware, users.upload);
   app.get('/api/users', users.list);
   app.get('/api/users/:id', users.read);

@@ -1,17 +1,17 @@
 
 module.exports = function (sequelize, app, multipartMiddleware, opts) {
   "use strict";
-  
+
   var Sequelize = require('sequelize'),
       tableAPI = require('../tableAPI.js');
-  
+
   var Goods = sequelize.define('goods', {
     article: Sequelize.TEXT,
     name: Sequelize.TEXT,
     price: Sequelize.FLOAT,
     currency: Sequelize.TEXT,
     description: Sequelize.TEXT,
-    
+
     comments: Sequelize.TEXT
   }, {
     freezeTableName: true // Model tableName will be the same as the model name
@@ -19,9 +19,9 @@ module.exports = function (sequelize, app, multipartMiddleware, opts) {
 
   Goods.belongsTo(opts.Categories);
   Goods.belongsTo(opts.Providers);
-  
+
   var goods = tableAPI.setup(Goods, sequelize);
-  
+
   app.post('/api/goods/upload', multipartMiddleware, goods.upload);
   app.get('/api/goods', goods.list);
   app.get('/api/goods/:id', function (req, res) {

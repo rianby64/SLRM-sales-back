@@ -17,10 +17,10 @@ module.exports = function (sequelize, app, multipartMiddleware, opts) {
   var commprop = tableAPI.setup(Commprop, sequelize);
   Commprop.belongsTo(opts.Client);
   Commprop.belongsTo(opts.Broker);
-  
+
   app.post('/api/commprop/upload', multipartMiddleware, commprop.upload);
   app.get('/api/commprop', function (req, res) {
-    
+
     var search = { $or: {}},
         attributes = [
           'commercial_proposal.id',
@@ -53,13 +53,13 @@ module.exports = function (sequelize, app, multipartMiddleware, opts) {
         });
       }
     }
-    
-    
+
+
     return Commprop.findAll({
       include: [
         {
           model: opts.Client
-        }, 
+        },
         {
           model: opts.Broker
         }
@@ -101,7 +101,7 @@ module.exports = function (sequelize, app, multipartMiddleware, opts) {
       }).then(function(entry) {
           res.json(entry);
       });
-    });      
+    });
   });
   app.put('/api/commprop/:id', commprop.update);
   app.delete('/api/commprop/:id', commprop.delete);

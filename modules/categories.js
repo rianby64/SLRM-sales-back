@@ -12,7 +12,7 @@ module.exports = function (sequelize, app, multipartMiddleware) {
   });
 
   var categories = tableAPI.setup(Categories, sequelize);
-  
+
   app.post('/api/categories/upload', multipartMiddleware, categories.upload);
   app.get('/api/categories', categories.list);
   app.get('/api/categories/:id', categories.read);
