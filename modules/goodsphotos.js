@@ -61,7 +61,7 @@ module.exports = function (sequelize, app, multipartMiddleware, opts) {
         };
 
         resize(image, output, function(error, versions) {
-          if (error) { console.error(error); }
+          if (error) { res.status(404); console.log(error); }
 
 //          console.log(versions[0].path);   // /path/to/image-thumb.jpg
 //          console.log(versions[0].width);  // 150
@@ -72,6 +72,10 @@ module.exports = function (sequelize, app, multipartMiddleware, opts) {
 //          console.log(versions[1].height); // 200
 
 
+          if (versions instanceof Array) {
+            var t = versions[1];
+          }
+          if (!t) { res.status(404); console.log(error); }
           fs.unlink(oldPath, function(){
             if (err) {
               res.json({

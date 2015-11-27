@@ -13,6 +13,7 @@ module.exports = function (sequelize, app, multipartMiddleware, opts) {
     price: Sequelize.INTEGER,
     currency: Sequelize.TEXT,
     delivery_date: Sequelize.DATE,
+    arrival_date: Sequelize.DATE,
     quantity: Sequelize.INTEGER,
     comments: Sequelize.TEXT
   }, {
