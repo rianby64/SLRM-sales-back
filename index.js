@@ -24,11 +24,10 @@ var smtpServer  = email.server.connect({
 // Setup of Passwordless
 passwordless.init(new MemoryStore());
 passwordless.addDelivery(function(tokenToSend, uidToSend, recipient, callback) {
-  var host = 'localhost:3000',
+  var host = 'manager.spa-land.ru',
       message = {
-        text:    'Hello!\nAccess your account here: http://'
-        + host + "/#/authenticate/" + tokenToSend + "/" + encodeURIComponent(uidToSend),
-        from:    'info@matematico.pro',
+        text:    'Hello!\nAccess your account here: http://' + host + "/#/authenticate/" + tokenToSend + "/" + encodeURIComponent(uidToSend), 
+        from:    'robot@manager.spa-land.ru', 
         to:      recipient,
         subject: 'Token for ' + host
       };
@@ -162,7 +161,7 @@ app.use(function(req, res, next) {
     res.status(404).end();
 });
 
-var server = app.listen(3000, function () {
+var server = app.listen(3000, 'localhost', function () {
   var host = server.address().address;
   var port = server.address().port;
 
