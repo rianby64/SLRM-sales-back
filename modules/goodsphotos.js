@@ -51,12 +51,12 @@ module.exports = function (sequelize, app, multipartMiddleware, opts) {
         var output = {
           versions: [{
             suffix: '-thumb',
-            maxHeight: 100,
-            maxWidth: 100
+            maxHeight: 200,
+            maxWidth: 200
           },{
             suffix: '-square',
-            maxHeight: 300,
-            maxWidth: 300
+            maxHeight: 600,
+            maxWidth: 600
           }]
         };
 
