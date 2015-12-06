@@ -22,9 +22,7 @@ module.exports = function (sequelize, app, multipartMiddleware, opts) {
 
   var goods = tableAPI.setup(Goods, sequelize);
 
-  app.post('/api/goods/upload', multipartMiddleware, goods.upload);
-  app.get('/api/goods', goods.list);
-  app.get('/api/goods/:id', function (req, res) {
+  function leerUna(req, res) {
     var id = ~~req.params.id;
     return Goods.findOne({
       where: {id: id},
@@ -39,9 +37,24 @@ module.exports = function (sequelize, app, multipartMiddleware, opts) {
     }).then(function(entry) {
         res.json(entry);
     });
-  });
+  }
+
+  app.post('/api/goods/upload', multipartMiddleware, goods.upload);
+  app.get('/api/goods', goods.list);
+  app.get('/api/goods/:id', leerUna);
   app.post('/api/goods', goods.create);
-  app.put('/api/goods/:id', goods.update);
+  app.put('/api/goods/:id', function (req, res) {
+    var id = ~~req.params.id;
+    var updateData = req.body;
+
+    return Goods.update(updateData, {
+      where: {
+        id: id
+      }
+    }).then(function(entry) {
+      leerUna(req, res);
+    });
+  });
   app.delete('/api/goods/:id', goods.delete);
 
   return goods;

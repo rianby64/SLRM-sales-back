@@ -54,7 +54,6 @@ module.exports = function (sequelize, app, multipartMiddleware, opts) {
       }
     }
 
-
     return Commprop.findAll({
       include: [
         {
@@ -69,7 +68,8 @@ module.exports = function (sequelize, app, multipartMiddleware, opts) {
       res.json(entries);
     });
   });
-  app.get('/api/commprop/:id', function (req, res) {
+
+  function leerUna(req, res) {
     var id = ~~req.params.id;
     return Commprop.findOne({
       where: {id: id},
@@ -84,7 +84,10 @@ module.exports = function (sequelize, app, multipartMiddleware, opts) {
     }).then(function(entry) {
         res.json(entry);
     });
-  });
+  }
+
+  app.get('/api/commprop/:id', leerUna);
+
   app.post('/api/commprop', function (req, res) {
     var neItem = req.body;
     return Commprop.create(neItem).then(function(created) {
@@ -103,7 +106,26 @@ module.exports = function (sequelize, app, multipartMiddleware, opts) {
       });
     });
   });
-  app.put('/api/commprop/:id', commprop.update);
+  app.put('/api/commprop/:id', function (req, res) {
+    var id = ~~req.params.id;
+    var updateData = req.body;
+
+    return Commprop.update(updateData, {
+      where: {
+        id: id
+      },
+      include: [
+        {
+          model: opts.Client
+        },
+        {
+          model: opts.Broker
+        }
+      ]
+    }).then(function(entry) {
+      leerUna(req, res);
+    });
+  });
   app.delete('/api/commprop/:id', commprop.delete);
 
   return commprop;
