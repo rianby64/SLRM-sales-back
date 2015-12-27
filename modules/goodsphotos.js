@@ -83,6 +83,8 @@ module.exports = function (sequelize, app, multipartMiddleware, opts) {
               });
               return;
             }
+            if (!versions) { res.status(404); console.log(error); return; }
+            if (versions.length === 0) { res.status(404); console.log(error); return; }
             var neItem = {
               goodId: goodId,
               path: versions[1].path
