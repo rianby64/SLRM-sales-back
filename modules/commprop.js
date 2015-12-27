@@ -52,6 +52,9 @@ module.exports = function (sequelize, app, multipartMiddleware, opts) {
           search.$or[attr] = sequelize.where(sequelize.cast(sequelize.col(attr), 'text'), { $ilike: '%' + req.query.search + '%' });
         });
       }
+      if (req.query.status) {
+        search.status = req.query.status;
+      }
     }
 
     return Commprop.findAll({
