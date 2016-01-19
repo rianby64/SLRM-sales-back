@@ -26,9 +26,15 @@ module.exports = function (sequelize, app, multipartMiddleware, opts) {
         dir1 = './static',
         dir2 = dir1 + '/uploaded',
         dir = dir2 + '/goodsphotos',
-        newPath = dir + '/' + req.files.file.name,
+        file_extension_regexp = /.*(\.?png|gif|.?jp.?g)$/i,
+        newFilename = (new Date()).toISOString().replace(/-/g, '').replace(/:/g, '').replace(/\./g, ''),
+        newPath = dir + '/' + newFilename + '.' + req.files.file.name.match(file_extension_regexp)[1],
         goodId = ~~req.params.goodId;
 
+    if (!file_extension_regexp.test(newPath)) {
+      res.status(404);
+      return;
+    }
 
     if (!fs.existsSync(dir2)) {
       fs.mkdirSync(dir2);
@@ -42,7 +48,6 @@ module.exports = function (sequelize, app, multipartMiddleware, opts) {
 
     fs.readFile(oldPath, function(err, data) {
       fs.writeFile(newPath, data, function(err) {
-
 
         var image = {
           path: newPath
@@ -62,15 +67,6 @@ module.exports = function (sequelize, app, multipartMiddleware, opts) {
 
         resize(image, output, function(error, versions) {
           if (error) { res.status(404); console.log(error); }
-
-//          console.log(versions[0].path);   // /path/to/image-thumb.jpg
-//          console.log(versions[0].width);  // 150
-//          console.log(versions[0].height); // 100
-//
-//          console.log(versions[1].path);   // /path/to/image-square.jpg
-//          console.log(versions[1].width);  // 200
-//          console.log(versions[1].height); // 200
-
 
           if (versions instanceof Array) {
             var t = versions[1];
