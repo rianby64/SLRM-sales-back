@@ -139,8 +139,12 @@ var commprop = require('./modules/commprop.js')(SLRMdb, app, multipartMiddleware
   Broker: brokers.model
 });
 
+var commpropvariants = require('./modules/commpropvariants.js')(SLRMdb, app, multipartMiddleware, {
+  Commprop: commprop.model
+});
+
 var commpropgoods = require('./modules/commpropgoods.js')(SLRMdb, app, multipartMiddleware, {
-  Commprop: commprop.model,
+  CommpropVariants: commpropvariants.model,
   Goods: goods.model,
   Providers: providers.model
 });
@@ -153,9 +157,8 @@ goodsphotos.model.sync();
 providers.model.sync();
 goodsproviders.model.sync();
 commprop.model.sync();
+commpropvariants.model.sync();
 commpropgoods.model.sync();
-
-
 
 app.use(function(req, res, next) {
     res.status(404).end();

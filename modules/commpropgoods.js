@@ -5,11 +5,6 @@ module.exports = function (sequelize, app, multipartMiddleware, opts) {
       tableAPI = require('../tableAPI.js');
 
   var CommpropGoods = sequelize.define('commercial_proposal_goods', {
-    id: {
-      type: Sequelize.INTEGER,
-      primaryKey: true,
-      autoIncrement: true
-    },
     price: Sequelize.INTEGER,
     currency: Sequelize.TEXT,
     delivery_period: Sequelize.TEXT,
@@ -19,25 +14,28 @@ module.exports = function (sequelize, app, multipartMiddleware, opts) {
     freezeTableName: true // Model tableName will be the same as the model name
   });
 
-  CommpropGoods.belongsTo(opts.Commprop);
+  CommpropGoods.belongsTo(opts.CommpropVariants);
   CommpropGoods.belongsTo(opts.Goods);
 
   var commpropgoods = tableAPI.setup(CommpropGoods, sequelize);
 
-  app.post('/api/commprop/:commercialProposalId/goods/upload', multipartMiddleware, commpropgoods.upload);
-  app.get('/api/commprop/:commercialProposalId/goods', function (req, res) {
-    var commercialProposalId = ~~req.params.commercialProposalId;
+  app.post('/api/commpropvariant/:commercialProposalVariantId/goods/upload', multipartMiddleware, commpropgoods.upload);
+  app.get( '/api/commpropvariant/:commercialProposalVariantId/goods', function (req, res) {
+    var commercialProposalVariantId = ~~req.params.commercialProposalVariantId;
     return CommpropGoods.findAll({
       where: {
-        commercialProposalId: commercialProposalId
+        commercialProposalVariantId: commercialProposalVariantId
       },
       include: [{
-        model: opts.Goods,
+        model: opts.Commprop,
         include: [{
-          model: opts.Providers
+          model: opts.Goods,
+          include: [{
+            model: opts.Providers
+          }]
         }]
       }, {
-        model: opts.Commprop
+        model: opts.CommpropVariants
       }]
     }).then(function(entries) {
       res.json(entries);
