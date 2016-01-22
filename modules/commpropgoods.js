@@ -27,12 +27,9 @@ module.exports = function (sequelize, app, multipartMiddleware, opts) {
         commercialProposalVariantId: commercialProposalVariantId
       },
       include: [{
-        model: opts.Commprop,
+        model: opts.Goods,
         include: [{
-          model: opts.Goods,
-          include: [{
-            model: opts.Providers
-          }]
+          model: opts.Providers
         }]
       }, {
         model: opts.CommpropVariants
@@ -41,10 +38,10 @@ module.exports = function (sequelize, app, multipartMiddleware, opts) {
       res.json(entries);
     });
   });
-  app.get('/api/commprop/:commercialProposalId/goods/:id', commpropgoods.read);
-  app.put('/api/commprop/:commercialProposalId/goods/:id', commpropgoods.update);
-  app.post('/api/commprop/:commercialProposalId/goods', commpropgoods.create);
-  app.delete('/api/commprop/:commercialProposalId/goods/:id', commpropgoods.delete);
+  app.get('/api/commpropvariant/:commercialProposalId/goods/:id', commpropgoods.read);
+  app.put('/api/commpropvariant/:commercialProposalId/goods/:id', commpropgoods.update);
+  app.post('/api/commpropvariant/:commercialProposalId/goods', commpropgoods.create);
+  app.delete('/api/commpropvariant/:commercialProposalId/goods/:id', commpropgoods.delete);
 
   return commpropgoods;
 };
