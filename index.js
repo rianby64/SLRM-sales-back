@@ -151,6 +151,7 @@ var commpropgoods = require('./modules/commpropgoods.js')(SLRMdb, app, multipart
 
 var orderform = require('./modules/orderform.js')(SLRMdb, app, multipartMiddleware, {
   Commprop: commprop.model,
+  CommpropVariants: commpropvariants.model,
   Client: clients.model,
   Broker: brokers.model
 });

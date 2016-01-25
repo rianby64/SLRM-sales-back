@@ -16,6 +16,7 @@ module.exports = function (sequelize, app, multipartMiddleware, opts) {
   });
 
   OrderForm.belongsTo(Commprop);
+  OrderForm.belongsTo(opts.CommpropVariants);
   Commprop.hasOne(OrderForm);
   var orderform = tableAPI.setup(OrderForm, sequelize);
 
@@ -65,6 +66,8 @@ module.exports = function (sequelize, app, multipartMiddleware, opts) {
           }, {
             model: opts.Broker
           }]
+        },{
+          model: opts.CommpropVariants
         }]
       }).then(function(entries) {
         res.json(entries);
@@ -72,7 +75,24 @@ module.exports = function (sequelize, app, multipartMiddleware, opts) {
     });
     
   });
-  app.get('/api/orderform/:id', orderform.read);
+  app.get('/api/orderform/:id', function (req, res) {
+    var id = ~~req.params.id;
+    return OrderForm.findOne({
+      where: { id: id },
+      include: [{
+        model: Commprop,
+        include: [{
+          model: opts.Client
+        }, {
+          model: opts.Broker
+        }]
+      }, {
+        model: opts.CommpropVariants
+      }]
+    }).then(function(entry) {
+      res.json(entry);
+    });
+  });
   app.post('/api/orderform', orderform.create);
   app.put('/api/orderform/:id', orderform.update);
   app.delete('/api/orderform/:id', orderform.delete);
